@@ -21,14 +21,17 @@ public class Student {
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "subject_id")
     )
-    private List<Subject> enrolledSubjects;
+    private List<Subject> enrolledSubjects = new ArrayList<>();
 
+    public Student(){
 
-    public Student(Integer studentId, String studentName) {
-        this.studentId = studentId;
-        this.studentName = studentName;
-        this.enrolledSubjects = new ArrayList<>();
     }
+
+//    public Student(Integer studentId, String studentName) {
+//        this.studentId = studentId;
+//        this.studentName = studentName;
+//        this.enrolledSubjects = new ArrayList<>();
+//    }
 
     public Integer getStudentId() {
         return studentId;
