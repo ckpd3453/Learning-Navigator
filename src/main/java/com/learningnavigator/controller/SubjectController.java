@@ -1,28 +1,44 @@
 package com.learningnavigator.controller;
 
-import com.learningnavigator.dto.ResponseDTO;
 import com.learningnavigator.model.Subject;
 import com.learningnavigator.service.SubjectService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/")
+@RequestMapping("/subjects")
 public class SubjectController {
 
-    @Autowired
-    private SubjectService subjectService;
+    private final SubjectService subjectService;
 
-    @PostMapping(value = "subjects", produces = "application/json")
-    public ResponseEntity<Subject> createSubject(@RequestBody Subject subject) {
-        Subject savedSubject = subjectService.createSubject(subject);
-        return new ResponseEntity<>(savedSubject, HttpStatus.CREATED);
+    public SubjectController(SubjectService subjectService) {
+        this.subjectService = subjectService;
     }
 
-}
+    @PostMapping
+    public Subject createSubject(@RequestBody Subject subject) {
+        return subjectService.createSubject(subject);
+    }
 
+    @GetMapping
+    public List<Subject> getAllSubjects() {
+        return subjectService.getAllSubjects();
+    }
+
+    @GetMapping("/{id}")
+    public Subject getSubjectById(@PathVariable Integer id) {
+        return subjectService.getSubjectById(id)
+                .orElseThrow(() -> new RuntimeException("Subject not found"));
+    }
+
+    @PutMapping("/{id}")
+    public Subject updateSubject(@PathVariable Integer id, @RequestBody Subject subject) {
+        return subjectService.updateSubject(id, subject);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteSubject(@PathVariable Integer id) {
+        subjectService.deleteSubject(id);
+    }
+}

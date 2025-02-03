@@ -1,43 +1,44 @@
 package com.learningnavigator.controller;
 
-import com.learningnavigator.dto.ResponseDTO;
-import com.learningnavigator.dto.StudentDTO;
 import com.learningnavigator.model.Student;
 import com.learningnavigator.service.StudentService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/api/v1/")
+@RequestMapping("/students")
 public class StudentController {
 
-    @Autowired
-    private StudentService studentService;
+    private final StudentService studentService;
 
-    @PostMapping(value = "students")
-    public ResponseEntity<Student> createStudent(@RequestBody Student student) {
-        Student savedStudent = studentService.createStudent(student);
-        return new ResponseEntity<>(savedStudent, HttpStatus.CREATED);
+    public StudentController(StudentService studentService) {
+        this.studentService = studentService;
     }
 
-    @PutMapping("students/{studentId}/enroll")
-    public ResponseEntity<?> enrolledSubjectToStudent(
-            @PathVariable Integer studentId, @RequestBody Map<String, List<Integer>> requestBody){
-
-        List<Integer> subjectIds = requestBody.get("enrolledSubjects");
-        if(subjectIds == null || subjectIds.isEmpty()){
-            return ResponseEntity.badRequest().body("Subject IDs list is empty or invalid");
-        }
-
-        Student updatedStudent = studentService.enrollSubjects(studentId, subjectIds);
-        return ResponseEntity.ok(updatedStudent);
-
+    @PostMapping
+    public Student registerStudent(@RequestBody Student student) {
+        return studentService.registerStudent(student);
     }
 
+    @GetMapping
+    public List<Student> getAllStudents() {
+        return studentService.getAllStudents();
+    }
+
+    @GetMapping("/{id}")
+    public Student getStudentById(@PathVariable Integer id) {
+        return studentService.getStudentById(id)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+    }
+
+    @PutMapping("/{studentId}/enroll/{subjectId}")
+    public Student enrollSubject(@PathVariable Integer studentId, @PathVariable Integer subjectId) {
+        return studentService.enrollSubject(studentId, subjectId);
+    }
+
+    @PutMapping("/{studentId}/register/{examId}")
+    public Student registerForExam(@PathVariable Integer studentId, @PathVariable Integer examId) {
+        return studentService.registerForExam(studentId, examId);
+    }
 }

@@ -1,6 +1,6 @@
 package com.learningnavigator.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -9,36 +9,43 @@ import java.util.List;
 @Entity
 public class Student {
 
+    public Student(String studentName) {
+        this.studentName = studentName;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer studentId;
+    private Integer studentRegistrationId;
+
     private String studentName;
 
-    // ManyToMany relationship with subject
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "student_subject",
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "subject_id")
     )
+    @JsonIgnore
     private List<Subject> enrolledSubjects = new ArrayList<>();
 
-    public Student(){
+    @ManyToMany
+    @JoinTable(
+            name = "student_exam",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "exam_id")
+    )
+    @JsonIgnore
+    private List<Exam> registeredExamsList = new ArrayList<>();
 
+    public Student() {
     }
 
-//    public Student(Integer studentId, String studentName) {
-//        this.studentId = studentId;
-//        this.studentName = studentName;
-//        this.enrolledSubjects = new ArrayList<>();
-//    }
-
-    public Integer getStudentId() {
-        return studentId;
+    public Integer getStudentRegistrationId() {
+        return studentRegistrationId;
     }
 
-    public void setStudentId(Integer studentId) {
-        this.studentId = studentId;
+    public void setStudentRegistrationId(Integer studentRegistrationId) {
+        this.studentRegistrationId = studentRegistrationId;
     }
 
     public String getStudentName() {
@@ -57,12 +64,19 @@ public class Student {
         this.enrolledSubjects = enrolledSubjects;
     }
 
+    public List<Exam> getRegisteredExamsList() {
+        return registeredExamsList;
+    }
+
+    public void setRegisteredExamsList(List<Exam> registeredExamsList) {
+        this.registeredExamsList = registeredExamsList;
+    }
+
     @Override
     public String toString() {
         return "Student{" +
-                "studentId=" + studentId +
+                "studentId=" + studentRegistrationId +
                 ", studentName='" + studentName + '\'' +
-                ", enrolledSubjects=" + enrolledSubjects +
                 '}';
     }
 }

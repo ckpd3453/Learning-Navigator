@@ -7,29 +7,20 @@ import java.util.stream.Collectors;
 
 public class StudentDTO {
 
-    private Integer studentId;
     private String studentName;
-    private List<String> enrolledSubjects;
+    private List<Subject> enrolledSubjects;
 
-    public StudentDTO(Integer studentId, String studentName, List<Subject> enrolledSubjects) {
-
-    }
-
-    // Constructor to convert Student entity to StudentDTO
-    public void StudentDTO(Integer studentId, String studentName, List<Subject> enrolledSubjects) {
-        this.studentId = studentId;
+    public void StudentDTO(String studentName, List<Subject> enrolledSubjects) {
         this.studentName = studentName;
-        this.enrolledSubjects = enrolledSubjects.stream()
-                .map(Subject::getSubjectName)
-                .collect(Collectors.toList()); // Get only subject names in the DTO
+        this.enrolledSubjects = enrolledSubjects;
     }
 
-    public Integer getStudentId() {
-        return studentId;
+    public List<Subject> getEnrolledSubjects() {
+        return enrolledSubjects;
     }
 
-    public void setStudentId(Integer studentId) {
-        this.studentId = studentId;
+    public void setEnrolledSubjects(List<Subject> enrolledSubjects) {
+        this.enrolledSubjects = enrolledSubjects;
     }
 
     public String getStudentName() {
@@ -38,13 +29,5 @@ public class StudentDTO {
 
     public void setStudentName(String studentName) {
         this.studentName = studentName;
-    }
-
-    public List<String> getEnrolledSubjects() {
-        return enrolledSubjects;
-    }
-
-    public void setEnrolledSubjects(List<String> enrolledSubjects) {
-        this.enrolledSubjects = enrolledSubjects;
     }
 }

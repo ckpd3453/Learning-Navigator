@@ -1,26 +1,39 @@
-//package com.learningnavigator.controller;
-//
-//import com.learningnavigator.dto.ResponseDTO;
-//import com.learningnavigator.model.Exam;
-//import com.learningnavigator.service.ExamService;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.http.HttpStatus;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.annotation.PostMapping;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RestController;
-//
-//@RestController
-//@RequestMapping("api/v1/")
-//public class ExamController {
-//
-//    @Autowired
-//    private ExamService examService;
-//
-//    @PostMapping(value = "exams", produces = "application/json")
-//    public ResponseEntity<ResponseDTO> createExam(Exam exam){
-//        Exam examEntry = examService.createExam(exam);
-//        ResponseDTO responseDTO = new ResponseDTO("Added Exam Successfully", examEntry);
-//        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
-//    }
-//}
+package com.learningnavigator.controller;
+
+import com.learningnavigator.model.Exam;
+import com.learningnavigator.service.ExamService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/exams")
+public class ExamController {
+
+    private final ExamService examService;
+
+    public ExamController(ExamService examService) {
+        this.examService = examService;
+    }
+
+    @PostMapping("/{subjectId}")
+    public Exam createExam(@PathVariable Integer subjectId) {
+        return examService.createExam(subjectId);
+    }
+
+    @GetMapping
+    public List<Exam> getAllExams() {
+        return examService.getAllExams();
+    }
+
+    @GetMapping("/{id}")
+    public Exam getExamById(@PathVariable Integer id) {
+        return examService.getExamById(id)
+                .orElseThrow(() -> new RuntimeException("Exam not found"));
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteExam(@PathVariable Integer id) {
+        examService.deleteExam(id);
+    }
+}

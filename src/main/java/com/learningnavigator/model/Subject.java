@@ -1,6 +1,5 @@
 package com.learningnavigator.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -15,23 +14,20 @@ public class Subject {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer subjectId;
 
-//    @Column(name = "subject_name")
     @JsonProperty("subjectName")
     private String subjectName;
 
-    // Many-to-Many relationship with Student (Bidirectional)
     @ManyToMany(mappedBy = "enrolledSubjects")
     @JsonIgnore
     private List<Student> enrolledStudents = new ArrayList<>();
 
-    public Subject(){
+    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Exam> exams = new ArrayList<>();
 
+
+    public Subject() {
     }
-//    public Subject(Integer subjectId, String subjectName) {
-//        this.subjectId = subjectId;
-//        this.subjectName = subjectName;
-//        this.enrolledStudents = new ArrayList<>();
-//    }
 
     public Integer getSubjectId() {
         return subjectId;
@@ -62,7 +58,6 @@ public class Subject {
         return "Subject{" +
                 "subjectId=" + subjectId +
                 ", subjectName='" + subjectName + '\'' +
-                ", enrolledStudents=" + enrolledStudents +
                 '}';
     }
 }
